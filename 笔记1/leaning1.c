@@ -5,6 +5,8 @@
 #include "leaning1.h"
 
 //Zend/zend_types.h:101
+
+
 typedef union _zend_value {
     zend_long         lval;				/* long value */
     double            dval;				/* double value */
@@ -77,13 +79,14 @@ union {
     struct {
         ZEND_ENDIAN_LOHI_4(
                 zend_uchar    type,			/* 占四个字节 */
-        zend_uchar    type_flags,
-                zend_uchar    const_flags,
+        zend_uchar    type_flags, //变量类型特有的标记
+                zend_uchar    const_flags, //常量类型的标记
         zend_uchar    reserved
         )	    /* call info for EX(This) */
     } v;
     uint32_t type_info;
 } u1;
+
 
     type:
 /* regular data types */
@@ -98,3 +101,57 @@ union {
 #define IS_OBJECT					8
 #define IS_RESOURCE					9
 #define IS_REFERENCE				10
+
+
+union { //占四个字节
+    uint32_t     next;                 /* 数组中解决冲突使用 hash collision chain */
+    uint32_t     cache_slot;           /* literal cache slot */
+    uint32_t     lineno;               /* line number (for ast nodes) */
+    uint32_t     num_args;             /* arguments number for EX(This) */
+    uint32_t     fe_pos;               /* foreach position */
+    uint32_t     fe_iter_idx;          /* foreach iterator index */
+    uint32_t     access_flags;         /* class constant access flags */
+    uint32_t     property_guard;       /* single property guard */
+} u2;
+
+
+//zvl 有三个联合体 value u1 和 u2
+
+//value 的类型 是由 u1的 type决定的.
+
+
+//通过echo 可以在zend虚拟机里打个断点.  b ZEND_ECHO_SPEC_CV_HANDLER
+
+
+
+/*
+        $a = 2;
+
+echo $a;
+
+$b = "fdsafa";
+
+echo $b;
+
+$c = new stdclass();
+
+echo $c;
+
+$e = [1,3,213,214,21];
+
+echo $e;
+
+$f = null;
+
+echo $f;
+
+$g = false;
+
+echo $g;
+
+$h =true;
+
+echo $h;*/
+
+
+//这几个变量都是相隔16个字节 , 放在了一起, 相当于每个变量占用了一个zvl
