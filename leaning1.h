@@ -1,0 +1,10 @@
+//
+// Created by zhaowei on 2021/1/7.
+//
+
+#ifndef PHPCODELEANING_LEANING1_H
+#define PHPCODELEANING_LEANING1_H
+
+#endif //PHPCODELEANING_LEANING1_H
+
+
